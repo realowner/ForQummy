@@ -4,7 +4,7 @@ from datetime import datetime
 from .base import BaseRepository
 from models.users import User, UserIn
 from db.users import users
-from core.security import hash_pass
+from core.security import hash_pass, verify_pass
 
 
 class UserRepository(BaseRepository):
@@ -16,7 +16,7 @@ class UserRepository(BaseRepository):
     
     # Достаем по id
     async def get_by_id(self, id: int) -> Optional[User]:
-        query = users.select().where(users.c.id==id).first()
+        query = users.select().where(users.c.id==id)
         user = await self.database.fetch_one(query)
         if user is None:
             return None
@@ -24,7 +24,7 @@ class UserRepository(BaseRepository):
     
     # Достаем по username
     async def get_by_username(self, username: str) -> User:
-        query = users.select().where(users.c.username==username).first()
+        query = users.select().where(users.c.username==username)
         user = await self.database.fetch_one(query)
         if user is None:
             return None
@@ -60,4 +60,15 @@ class UserRepository(BaseRepository):
         await self.database.execute(query)
         return user
     
+    # Проверка авторизации
+    async def check_auth(self, cred) -> bool:
+        query_select = users.select().where(users.c.username==cred.username)
+        query = await self.database.fetch_all(query_select)
+        if query:
+            if verify_pass(cred.password, query[0]._data[2]):
+                return True
+            else:
+                return False
+        else:
+            return False
         

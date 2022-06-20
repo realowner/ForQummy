@@ -1,18 +1,17 @@
-from turtle import title
 from fastapi import FastAPI
 import uvicorn
 
 from db.base import database
-from endpoints import users
+from endpoints import users, secretdata
 
 
 def create_application(title):
     application = FastAPI(title=title)
-    # application.include_router(router)
     return application
 
 app = create_application(title="ForQummy")
 app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(secretdata.router, prefix="/secretdata", tags=["secretdata"])
 
 @app.on_event('startup')
 async def startup():
