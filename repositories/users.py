@@ -60,15 +60,23 @@ class UserRepository(BaseRepository):
         await self.database.execute(query)
         return user
     
+    # Удаляем данные
+    async def delete(self, id: int) -> bool:
+        try:
+            query = users.delete().where(users.c.id==id)
+            await self.database.execute(query=query)
+            return True
+        except:
+            return False
+    
     # Проверка авторизации
     async def check_auth(self, cred) -> bool:
-        query_select = users.select().where(users.c.username==cred.username)
-        query = await self.database.fetch_all(query_select)
-        if query:
-            if verify_pass(cred.password, query[0]._data[2]):
+        check_user = await self.get_by_username(cred.username)
+        if check_user is None:
+            return False
+        else:
+            if verify_pass(cred.password, check_user.password_hash):
                 return True
             else:
                 return False
-        else:
-            return False
         

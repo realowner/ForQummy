@@ -55,7 +55,11 @@ class SecretdataRepository(BaseRepository):
         return secret_data
     
     # Удаляем данные
-    async def delete_sd(self, id: int):
-        query = secretdata.delete().where(secretdata.c.id==id)
-        return await self.database.execute(query=query)
+    async def delete_sd(self, id: int) -> bool:
+        try:
+            query = secretdata.delete().where(secretdata.c.id==id)
+            await self.database.execute(query=query)
+            return True
+        except:
+            return False
         
