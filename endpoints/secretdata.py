@@ -105,3 +105,19 @@ async def get_decrypted(secretdata: SecretdataRepository=Depends(get_secretdata_
     encrypted_data = await secretdata.get_all(100, 0)
     res = await secretdata.decrypted(encrypted_data)
     return res
+
+@router.post('/gitrepo')
+async def gitrepo(secretdata: SecretdataRepository=Depends(get_secretdata_repository),
+                        users: UserRepository=Depends(get_user_repository),
+                        credentials: HTTPBasicCredentials = Depends(security)):
+    auth_result = await users.check_auth(credentials)
+    if not auth_result:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    decrypted_data = await secretdata.get_all(100, 0)
+    res = await secretdata.send_gitrepo(decrypted_data)
+    if res:
+        return res

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+    <title>Qummy</title>
+</head>
+<body>
+    <header class='header'>
+        <div class='header-left'>
+            <h2>Тестовое задание | Qummy</h2>
+            <a href="/docs" class='main-link'>DOCS</a>
+        </div>
+        <div class='header-right'>
+            <p>21.06.2022 EvSE</p>
+            <a href="https://github.com/realowner" class='git-link'>GitHub</a>
+        </div>
+    </header>
+
+    <section class='content'>
+        <div class='content-info'>
+            <p>Тестовое задание выполнено при помощи следующих технологий:</p>
+            <ul class="tech">
+                <li>FastApi</li>
+                <li>SQLAlchemy</li>
+                <li>SQLite</li>
+                <li>Jinja2</li>
+                <li>Docker</li>
+                <li>Uvicorn</li>
+            </ul>
+            <p>Реализована дефолтная система CRUD для моделей Users и Secretdata. Также для Secretdata реализованы эндпоинты с ТЗ, для сбора и обрабртки зашифрованной
+                информации.</p>
+            <p>Эндпоинт "secretdata/encrypted" делает get запрос по указанному в ТЗ адресу, достает данные и записывает из в таблицу. 
+                Возвразает список зашифрованных строк.</p>
+            <p>Эндпоинт "secretdata/decrypted" делает post запрос по указанному в ТЗ адресу, расшифровывает данные и записывает их в таблицу. 
+                Возвразает список расшифрованных строк.</p>
+            <p>Все эндпоинты, кроме "GET|Users" и "POST|Users" требуют авторизации:</p>
+            <p class='request'>Login: qummy <br> Password: GiVEmYsecReT!</p>
+            <p>Если возникнут проблеммы с авторизацией можно использовать резервную или просто добавить нового юзера через "POST|Users":</p>
+            <p class='request'>Login: admin <br> Password: admin</p>
+            <a href="/docs" class='main-link cont'>Запросы и Документация</a>
+        </div>
+    </section>
+    
+</body>
+</html>

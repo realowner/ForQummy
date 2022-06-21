@@ -100,13 +100,28 @@ class SecretdataRepository(BaseRepository):
             encrypted_item = []
             parsed_item = Secretdata.parse_obj(item)
             encrypted_item.append(parsed_item.encrypted_text)
-            decrypted_list.append(parsed_item.encrypted_text)
             decrypt = requests.post('http://yarlikvid.ru:9999/api/decrypt',
                                     auth=HTTPBasicAuth('qummy', 'GiVEmYsecReT!'),
                                     json=encrypted_item)
-
             query = secretdata.update().where(
                 secretdata.c.encrypted_text==parsed_item.encrypted_text
             ).values(decrypted_text=json.loads(decrypt.text)[0])
+            decrypted_list.append(json.loads(decrypt.text)[0])
             await self.database.execute(query=query)
         return decrypted_list
+    
+    # Отправляем репозиторий
+    async def send_gitrepo(self, data: List):
+        decrypted_list = []
+        for item in data:
+            parsed_item = Secretdata.parse_obj(item)
+            decrypted_list.append(parsed_item.decrypted_text)
+        my_info = {
+            "name": "Сердюк Евгений",
+            "repo_url": "https://github.com/realowner/ForQummy",
+            "result": decrypted_list
+        }
+        send = requests.post('http://yarlikvid.ru:9999/api/result',
+                                    auth=HTTPBasicAuth('qummy', 'GiVEmYsecReT!'),
+                                    json=my_info)
+        return my_info

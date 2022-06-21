@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ul[class],
+ol[class] {
+    padding: 0;
+}
+a {
+    text-decoration: none;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: rgb(236, 236, 236);
+}
+
+.header {
+    height: 60px;
+    background-color: rgb(202, 202, 202);
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 25px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main-link {
+    margin-left: 10px;
+    background-color: rgb(231, 164, 39);
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+.main-link:hover {
+    background-color: rgb(235, 186, 96);
+    color: white;
+}
+
+.cont {
+    width: fit-content;
+    margin: auto;
+    margin-top: 10px;
+}
+
+.git-link {
+    margin-left: 10px;
+    background-color: rgb(231, 164, 39);
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+.git-link:hover {
+    background-color: rgb(235, 186, 96);
+    color: white;
+}
+
+.content {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+}
+
+.content-info {
+    display: flex;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 100px;
+}
+
+.tech {
+    margin-left: 50px;
+}
+
+.request {
+    padding: 10px;
+    font-size: 16px;
+    background-color: white;
+    color: rgb(62, 144, 236);
+    border-radius: 10px;
+    margin-left: 10px;
+    margin: 8px 0px;
+}
+
+.info-block {
+    margin-top: 25px;
+}
