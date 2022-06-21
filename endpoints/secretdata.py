@@ -73,3 +73,35 @@ async def delete_secretdata(id: int, secretdata: SecretdataRepository=Depends(ge
     if result:
         return {"status": True}
     return {"status": False}
+
+@router.get('/encrypted')
+async def get_encrypted(secretdata: SecretdataRepository=Depends(get_secretdata_repository),
+                        users: UserRepository=Depends(get_user_repository),
+                        credentials: HTTPBasicCredentials = Depends(security)):
+    auth_result = await users.check_auth(credentials)
+    if not auth_result:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    res = await secretdata.encrypted()
+    result = await secretdata.create_many(res)
+    if result:
+        return res
+    return {"status": False}
+
+@router.post('/decrypted')
+async def get_decrypted(secretdata: SecretdataRepository=Depends(get_secretdata_repository),
+                        users: UserRepository=Depends(get_user_repository),
+                        credentials: HTTPBasicCredentials = Depends(security)):
+    auth_result = await users.check_auth(credentials)
+    if not auth_result:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    encrypted_data = await secretdata.get_all(100, 0)
+    res = await secretdata.decrypted(encrypted_data)
+    return res

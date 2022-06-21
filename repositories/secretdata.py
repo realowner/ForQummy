@@ -1,3 +1,4 @@
+from sqlalchemy import insert
 from .base import BaseRepository
 from db.secretdata import secretdata
 from models.secretdata import Secretdata, SecretdataIn
@@ -5,6 +6,10 @@ from models.secretdata import Secretdata, SecretdataIn
 from typing import List, Optional
 
 from datetime import datetime
+
+import requests
+from requests.auth import HTTPBasicAuth
+import json
 
 
 class SecretdataRepository(BaseRepository):
@@ -62,4 +67,46 @@ class SecretdataRepository(BaseRepository):
             return True
         except:
             return False
-        
+    
+    # Достаем зашифрованные данные
+    async def encrypted(self) -> List:
+        response = requests.get('http://yarlikvid.ru:9999/api/top-secret-data') 
+        return json.loads(response.text)
+    
+    # Добавление нескольких строк
+    async def create_many(self, item_list: List) -> bool:
+        items = await self.create_list(item_list)
+        try:
+            await self.database.execute_many(secretdata.insert(), items)
+            return True
+        except:
+            return False
+
+    # Вспомогательный метод для формирования данных для запроса
+    async def create_list(self, items) -> List:
+        item_list = []
+        for item in items:
+            item_list.append({
+                'encrypted_text': item,
+                'created_at': datetime.utcnow(),
+                'updated_at': datetime.utcnow()
+            })
+        return item_list
+    
+    # Расшифруем данные
+    async def decrypted(self, data: List) -> List:
+        decrypted_list = []
+        for item in data:
+            encrypted_item = []
+            parsed_item = Secretdata.parse_obj(item)
+            encrypted_item.append(parsed_item.encrypted_text)
+            decrypted_list.append(parsed_item.encrypted_text)
+            decrypt = requests.post('http://yarlikvid.ru:9999/api/decrypt',
+                                    auth=HTTPBasicAuth('qummy', 'GiVEmYsecReT!'),
+                                    json=encrypted_item)
+
+            query = secretdata.update().where(
+                secretdata.c.encrypted_text==parsed_item.encrypted_text
+            ).values(decrypted_text=json.loads(decrypt.text)[0])
+            await self.database.execute(query=query)
+        return decrypted_list

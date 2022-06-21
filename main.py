@@ -16,6 +16,10 @@ app.include_router(secretdata.router, prefix="/secretdata", tags=["secretdata"])
 @app.on_event('startup')
 async def startup():
     await database.connect()
+    
+@app.get('/')
+async def root():
+    return {'main'}
 
 @app.on_event("shutdown")
 async def shutdown():
